@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Shotro.ai - AI Film Production Platform</title>
+  <style>
+    * { margin:0; padding:0; box-sizing:border-box; }
+
+    body {
+      font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;
+      background:#0a0a0a; color:#fff; overflow-x:hidden; line-height:1.8;
+    }
+
+    .grain {
+      position:fixed; top:0; left:0; width:100%; height:100%;
+      pointer-events:none; opacity:.03; z-index:1000;
+      background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 400 400' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
+    }
+
+    .container { max-width:1400px; margin:0 auto; padding:0 40px; }
+
+    header {
+      padding:30px 0; position:fixed; width:100%; top:0; z-index:100;
+      backdrop-filter:blur(20px); background:rgba(10,10,10,.7);
+      border-bottom:1px solid rgba(255,255,255,.05);
+    }
+
+    nav {
+      display:flex; justify-content:space-between; align-items:center;
+      max-width:1400px; margin:0 auto; padding:0 40px;
+    }
+
+    .logo {
+      font-size:24px; font-weight:600; letter-spacing:-.5px;
+      background:linear-gradient(135deg,#fff 0%,#a0a0a0 100%);
+      -webkit-background-clip:text; -webkit-text-fill-color:transparent;
+    }
+
+.logo-group {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.logo-img {
+  height: 25px;
+  width: auto;
+  opacity: 0.9;
+}
+
+    .hero {
+      min-height:100vh; display:flex; align-items:center; justify-content:center;
+      position:relative; padding-top:100px;
+    }
+
+    .hero-content { text-align:center; z-index:2; padding:20px; }
+
+    .hero h1 {
+      font-size:clamp(48px,8vw,120px); font-weight:700; letter-spacing:-.02em;
+      line-height:1.3; margin-bottom:50px; padding:20px 10px;
+      background:linear-gradient(180deg,#fff 0%,#666 100%);
+      -webkit-background-clip:text; -webkit-text-fill-color:transparent;
+    }
+
+    .tagline {
+      font-size:clamp(20px,3vw,32px); color:#888; margin-bottom:60px;
+      font-weight:300; letter-spacing:-.02em; line-height:1.8;
+    }
+
+    .cta-section { display:flex; flex-direction:column; align-items:center; gap:20px; }
+
+    .waitlist-form {
+      display:flex; gap:12px; margin-bottom:20px; flex-wrap:wrap; justify-content:center;
+    }
+
+    input[type="email"] {
+      padding:18px 28px; font-size:16px; background:rgba(255,255,255,.05);
+      border:1px solid rgba(255,255,255,.1); border-radius:12px; color:#fff;
+      width:320px; transition:all .3s ease; outline:none;
+    }
+    input[type="email"]:focus { background:rgba(255,255,255,.08); border-color:rgba(255,255,255,.3); }
+    input[type="email"]::placeholder { color:#666; }
+
+    button {
+      padding:18px 40px; font-size:16px; background:#eee; color:#0a0a0a;
+      border:none; border-radius:12px; cursor:pointer; font-weight:600;
+      transition:all .3s ease; position:relative; overflow:hidden;
+    }
+    button:hover { transform:translateY(-2px); box-shadow:0 10px 40px rgba(255,255,255,.2); }
+    button:active { transform:translateY(0); }
+
+    .animated-text {
+      font-size:clamp(18px,2.5vw,28px); color:#666; margin-top:10px;
+      font-weight:400; letter-spacing:-.02em; opacity:0;
+      animation:fadeInOut 4s ease-in-out;
+    }
+
+    @keyframes fadeInOut {
+      0%{opacity:0;}
+      20%{opacity:1;}
+      80%{opacity:1;}
+      100%{opacity:0;}
+    }
+
+    .success-message {
+      display:none; color:#4ade80; font-size:14px; margin-top:10px;
+    }
+    .success-message.show { display:block; }
+
+    footer {
+      padding:60px 0; text-align:center;
+      border-top:1px solid rgba(255,255,255,.05); color:#666;
+    }
+
+    .gradient-blur {
+      position:absolute; width:600px; height:600px;
+      background:radial-gradient(circle,rgba(100,100,100,.15) 0%,transparent 70%);
+      filter:blur(80px); pointer-events:none;
+    }
+    .blur-1{top:-200px;left:-200px;}
+    .blur-2{bottom:-200px;right:-200px;}
+
+    @media(max-width:768px){
+      .container,nav{padding:0 20px;}
+      .waitlist-form{flex-direction:column;width:100%;}
+      input[type="email"],button{width:100%;}
+    }
+  </style>
+</head>
+<body>
+  <div class="grain"></div>
+
+ <header>
+  <nav>
+    <div class="logo-group">
+      <img src="shotrologo.png" alt="Shotro logo" class="logo-img">
+      <div class="logo">shotro.ai</div>
+    </div>
+  </nav>
+</header>
+
+  <main>
+    <section class="hero">
+      <div class="gradient-blur blur-1"></div>
+      <div class="container">
+        <div class="hero-content">
+          <h1>Forget prompts</h1>
+          <p class="tagline">AI film production, reimagined</p>
+
+          <div class="cta-section">
+            <!-- Comment out or remove this block -->
+<!--
+<form class="waitlist-form" id="waitlistForm">
+              <input type="email" placeholder="Enter your email" required id="emailInput">
+              <button type="submit">Join Waitlist</button>
+            </form>
+-->
+
+<form class="waitlist-form" id="waitlistForm">
+  <input type="email" placeholder="Waitlist coming soon" id="emailInput" disabled>
+  <button type="submit" disabled>Join Waitlist</button>
+</form>
+
+
+            <!-- Slower 4-second animated text now below the form -->
+            <p class="animated-text" id="animatedText">For filmmakers.</p>
+            <p class="success-message" id="successMessage">✓ You're on the list!</p>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <div class="container">
+      <p>&copy; 2025 Shotro.ai. All rights reserved.</p>
+    </div>
+  </footer>
+
+  <script>
+    const phrases = [
+      'For filmmakers.',
+      'For agencies.',
+      'For studios.',
+      'Take control back.'
+    ];
+    let currentPhrase = 0;
+    const animatedText = document.getElementById('animatedText');
+
+    function cycleText() {
+      animatedText.style.animation = 'none';
+      setTimeout(() => {
+        animatedText.textContent = phrases[currentPhrase];
+        animatedText.style.animation = 'fadeInOut 4s ease-in-out';
+        currentPhrase = (currentPhrase + 1) % phrases.length;
+      }, 50);
+    }
+
+    cycleText();
+    setInterval(cycleText, 4000);
+
+    document.getElementById('waitlistForm').addEventListener('submit', function(e) {
+      e.preventDefault();
+      const email = document.getElementById('emailInput').value;
+      const successMessage = document.getElementById('successMessage');
+
+      const waitlistEmails = JSON.parse(sessionStorage.getItem('waitlist') || '[]');
+      waitlistEmails.push({ email: email, timestamp: new Date().toISOString() });
+      sessionStorage.setItem('waitlist', JSON.stringify(waitlistEmails));
+
+      successMessage.classList.add('show');
+      document.getElementById('emailInput').value = '';
+
+      setTimeout(() => successMessage.classList.remove('show'), 3000);
+    });
+  </script>
+</body>
+</html>
