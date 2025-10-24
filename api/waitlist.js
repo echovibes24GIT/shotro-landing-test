@@ -53,11 +53,11 @@ module.exports = async (req, res) => {
       await resend.emails.send({
         from: 'Shotro Team <team@shotro.ai>',
         to: email,
-        subject: 'Welcome to the Shotro Waitlist 🎬',
+        subject: 'Welcome to the Shotro Waitlist!',
         html: `
           <p>Hey there,</p>
           <p>You’re officially on the Shotro waitlist.</p>
-          <p>Stay tuned — cinematic AI is coming soon.</p>
+          <p>Stay tuned ...</p>
           <p>– The Shotro Team</p>
         `,
       });
