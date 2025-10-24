@@ -205,21 +205,39 @@
 
     cycleText();
     setInterval(cycleText, 4000);
-
-    document.getElementById('waitlistForm').addEventListener('submit', function(e) {
-      e.preventDefault();
-      const email = document.getElementById('emailInput').value;
-      const successMessage = document.getElementById('successMessage');
-
-      const waitlistEmails = JSON.parse(sessionStorage.getItem('waitlist') || '[]');
-      waitlistEmails.push({ email: email, timestamp: new Date().toISOString() });
-      sessionStorage.setItem('waitlist', JSON.stringify(waitlistEmails));
-
-      successMessage.classList.add('show');
-      document.getElementById('emailInput').value = '';
-
-      setTimeout(() => successMessage.classList.remove('show'), 3000);
-    });
   </script>
+
+<script>
+  document.getElementById('waitlistForm').addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const emailInput = document.getElementById('emailInput');
+    const successMessage = document.getElementById('successMessage');
+    const email = emailInput.value.trim();
+
+    const response = await fetch('/api/waitlist', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ email })
+    });
+
+    const data = await response.json();
+
+    if (data.message === 'exists') {
+      successMessage.textContent = 'You’re already on the list!';
+    } else if (data.message === 'added') {
+      successMessage.textContent = '✓ Welcome aboard!';
+    } else {
+      successMessage.textContent = 'Something went wrong. Try again.';
+    }
+
+    successMessage.classList.add('show');
+    emailInput.value = '';
+
+    setTimeout(() => successMessage.classList.remove('show'), 3000);
+  });
+</script>
+
+
+  
 </body>
 </html>
