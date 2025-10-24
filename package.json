@@ -1,0 +1,10 @@
+{
+  "name": "shotro-waitlist",
+  "version": "1.0.0",
+  "main": "index.js",
+  "type": "commonjs",
+  "dependencies": {
+    "@supabase/supabase-js": "^2.43.0",
+    "resend": "^3.1.0"
+  }
+}
