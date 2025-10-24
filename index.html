@@ -85,8 +85,20 @@
       border:1px solid rgba(255,255,255,.1); border-radius:12px; color:#fff;
       width:320px; transition:all .3s ease; outline:none;
     }
-    input[type="email"]:focus { background:rgba(255,255,255,.2); border-color:rgba(255,255,255,.3); }
+    input[type="email"]:focus { background:rgba(255,255,255,.08); border-color:rgba(255,255,255,.3); }
     input[type="email"]::placeholder { color:#666; }
+
+    /* === Autofill styling fix === */
+input[type="email"]:-webkit-autofill {
+  -webkit-box-shadow: 0 0 0px 1000px #eee inset !important;
+  -webkit-text-fill-color: #0a0a0a !important;
+  border: none !important;
+}
+
+input[type="email"]:-webkit-autofill:focus {
+  -webkit-box-shadow: 0 0 0px 1000px #eee inset !important;
+  -webkit-text-fill-color: #0a0a0a !important;
+}
 
   
     button {
