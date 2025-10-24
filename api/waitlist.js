@@ -16,7 +16,7 @@ module.exports = async (req, res) => {
       return res.status(400).json({ message: 'Invalid email' });
     }
 
-    // Optional pre-check (nice UX, but not sufficient alone)
+    // ✅ Step 1: Check for duplicates first — and stop right here if exists
     const { data: existing, error: checkError } = await supabase
       .from('waitlist')
       .select('email')
@@ -24,50 +24,52 @@ module.exports = async (req, res) => {
       .maybeSingle();
 
     if (checkError) {
-      console.error('Pre-check error:', checkError);
-    } else if (existing) {
-      console.log('Already exists (pre-check):', email);
+      console.error('Supabase pre-check error:', checkError);
+      return res.status(500).json({ message: 'error', detail: checkError.message });
+    }
+
+    if (existing) {
+      console.log('Duplicate signup prevented:', email);
       return res.status(200).json({ message: 'exists' });
     }
 
-    // Insert (authoritative) – will throw on duplicates
+    // ✅ Step 2: Insert the new email (unique constraint still active)
     const { error: insertError } = await supabase
       .from('waitlist')
       .insert([{ email }]);
 
     if (insertError) {
-      // If it's a unique violation, treat as "exists"
-      if (insertError.code === '23505' || /duplicate key value/i.test(insertError.message)) {
-        console.log('Already exists (unique constraint):', email);
+      // Handle duplicate (in case of race)
+      if (insertError.code === '23505' || /duplicate key/i.test(insertError.message)) {
+        console.log('Duplicate signup (race condition):', email);
         return res.status(200).json({ message: 'exists' });
       }
       console.error('Insert error:', insertError);
       return res.status(500).json({ message: 'error', detail: insertError.message });
     }
 
-    // Send welcome email only for fresh signups
+    // ✅ Step 3: Send welcome email only for *new* signups
     try {
       await resend.emails.send({
         from: 'Shotro Team <team@shotro.ai>',
         to: email,
-        subject: 'Welcome to the Shotro Waitlist!',
+        subject: 'Welcome to the Shotro Waitlist 🎬',
         html: `
           <p>Hey there,</p>
           <p>You’re officially on the Shotro waitlist.</p>
-          <p>Stay tuned...</p>
+          <p>Stay tuned — cinematic AI is coming soon.</p>
           <p>– The Shotro Team</p>
         `,
       });
+      console.log('Welcome email sent:', email);
     } catch (mailErr) {
-      // Log but don't fail the signup if email send hiccups
-      console.error('Resend error (mail send):', mailErr);
+      // Don’t fail if the email API hiccups
+      console.error('Resend mail send error:', mailErr);
     }
 
-    console.log('Added new email:', email);
     return res.status(200).json({ message: 'added' });
-
   } catch (error) {
-    console.error('Waitlist Error (handler):', error);
+    console.error('Waitlist handler error:', error);
     return res.status(500).json({ message: 'error', detail: error.message });
   }
 };
