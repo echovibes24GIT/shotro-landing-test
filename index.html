@@ -260,24 +260,6 @@ input[type="email"]:-webkit-autofill:focus {
       input[type="email"],button{width:100%;}
     }
 
-@media (max-width: 768px) {
-  .waitlist-form {
-    flex-direction: column;
-    gap: 10px;
-  }
-  #occupationInput,
-  #portfolioInput {
-    position: static;
-    opacity: 0;
-    transform: translateY(-10px);
-    transition: opacity 1s ease, transform 1s ease;
-  }
-  .waitlist-form.show-optional #occupationInput,
-  .waitlist-form.show-optional #portfolioInput {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
 
 
 
