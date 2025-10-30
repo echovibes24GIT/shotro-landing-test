@@ -10,7 +10,7 @@ module.exports = async (req, res) => {
 
   try {
     const body = typeof req.body === 'string' ? JSON.parse(req.body) : req.body;
-    const { email } = body || {};
+    const { email, occupation, portfolio } = body || {};
 
     if (!email || !email.includes('@')) {
       return res.status(400).json({ message: 'Invalid email' });
@@ -33,10 +33,10 @@ module.exports = async (req, res) => {
       return res.status(200).json({ message: 'exists' });
     }
 
-    // ✅ Step 2: Insert the new email (unique constraint still active)
+    // ✅ Step 2: Insert new record (optional fields supported)
     const { error: insertError } = await supabase
       .from('waitlist')
-      .insert([{ email }]);
+      .insert([{ email, occupation: occupation || null, portfolio: portfolio || null }]);
 
     if (insertError) {
       // Handle duplicate (in case of race)
@@ -50,6 +50,14 @@ module.exports = async (req, res) => {
 
     // ✅ Step 3: Send welcome email only for *new* signups
     try {
+      // Optional info block
+      const extraInfo = [];
+      if (occupation) extraInfo.push(`<p><strong>Occupation:</strong> ${occupation}</p>`);
+      if (portfolio)
+        extraInfo.push(
+          `<p><strong>Portfolio:</strong> <a href="${portfolio}" target="_blank">${portfolio}</a></p>`
+        );
+
       await resend.emails.send({
         from: 'Shotro Team <team@shotro.ai>',
         to: email,
@@ -58,9 +66,11 @@ module.exports = async (req, res) => {
           <p>Hey there,</p>
           <p>You’re officially on the Shotro waitlist.</p>
           <p>Stay tuned ...</p>
+          ${extraInfo.join('\n')}
           <p>– The Shotro Team</p>
         `,
       });
+
       console.log('Welcome email sent:', email);
     } catch (mailErr) {
       // Don’t fail if the email API hiccups
