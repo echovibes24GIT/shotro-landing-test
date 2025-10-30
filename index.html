@@ -157,39 +157,60 @@ input[type="email"]:-webkit-autofill:focus {
   color: #666;
 }
 
-/* === Optional fields animation === */
+/* === Optional fields animation (no overlap) === */
 #occupationInput,
 #portfolioInput {
   opacity: 0;
   pointer-events: none;
   position: absolute;
-  transition: opacity 3s ease, transform 1.2s ease;
+  transition: opacity 3s ease, transform 1.5s ease;
 }
 
-/* Each field has its own starting offset */
+/* individual offsets so they don't stack */
 #occupationInput {
   transform: translateX(-100px);
+  top: 0;
 }
 #portfolioInput {
-  transform: translateX(-200px);
+  transform: translateX(-100px);
+  top: 65px; /* moves portfolio slightly below occupation */
 }
 
-/* === When active === */
-.waitlist-form.show-optional #occupationInput,
-.waitlist-form.show-optional #portfolioInput {
+/* === When active (slide left & fade in) === */
+.waitlist-form.show-optional #occupationInput {
   opacity: 1;
   pointer-events: auto;
-}
-
-/* Smooth staggered slide-in */
-.waitlist-form.show-optional #occupationInput {
-  transform: translateX(-350px);
+  transform: translateX(-380px);
   transition-delay: 0.2s;
 }
 .waitlist-form.show-optional #portfolioInput {
-  transform: translateX(-700px);
+  opacity: 1;
+  pointer-events: auto;
+  transform: translateX(-380px);
   transition-delay: 0.5s;
 }
+
+/* keep consistent styling with other fields */
+.waitlist-form input[type="email"],
+.waitlist-form input[type="text"] {
+  padding: 18px 28px;
+  font-size: 16px;
+  background: rgba(255,255,255,.05);
+  border: 1px solid rgba(255,255,255,.1);
+  border-radius: 12px;
+  color: #fff;
+  width: 320px;
+  transition: all .3s ease;
+  outline: none;
+}
+.waitlist-form input:focus {
+  background: rgba(255,255,255,.08);
+  border-color: rgba(255,255,255,.3);
+}
+.waitlist-form input::placeholder {
+  color: #666;
+}
+
 
 
   
@@ -232,11 +253,35 @@ input[type="email"]:-webkit-autofill:focus {
     .blur-1{top:-200px;left:-200px;}
     .blur-2{bottom:-200px;right:-200px;}
 
+    
     @media(max-width:768px){
       .container,nav{padding:0 20px;}
       .waitlist-form{flex-direction:column;width:100%;}
       input[type="email"],button{width:100%;}
     }
+
+@media (max-width: 768px) {
+  .waitlist-form {
+    flex-direction: column;
+    gap: 10px;
+  }
+  #occupationInput,
+  #portfolioInput {
+    position: static;
+    opacity: 0;
+    transform: translateY(-10px);
+    transition: opacity 1s ease, transform 1s ease;
+  }
+  .waitlist-form.show-optional #occupationInput,
+  .waitlist-form.show-optional #portfolioInput {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+
+
+    
   </style>
 </head>
 <body>
