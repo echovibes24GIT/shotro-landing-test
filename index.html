@@ -126,6 +126,55 @@ input[type="email"]:-webkit-autofill:focus {
   -webkit-text-fill-color: #0a0a0a !important;
 }
 
+    /* === Waitlist layout === */
+.waitlist-form {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-wrap: nowrap;
+  gap: 12px;
+  position: relative;
+}
+
+/* === All inputs unified === */
+.waitlist-form input[type="email"],
+.waitlist-form input[type="text"] {
+  padding: 18px 28px;
+  font-size: 16px;
+  background: rgba(255,255,255,.05);
+  border: 1px solid rgba(255,255,255,.1);
+  border-radius: 12px;
+  color: #fff;
+  width: 320px;
+  transition: all .3s ease;
+  outline: none;
+}
+.waitlist-form input:focus {
+  background: rgba(255,255,255,.08);
+  border-color: rgba(255,255,255,.3);
+}
+.waitlist-form input::placeholder {
+  color: #666;
+}
+
+/* === Optional fields initially hidden === */
+#occupationInput,
+#portfolioInput {
+  opacity: 0;
+  pointer-events: none;
+  position: absolute;
+  left: -340px; /* start hidden to the left */
+  transition: opacity 3s ease, left 1.2s ease;
+}
+
+/* === When active, slide in & fade === */
+.waitlist-form.show-optional #occupationInput,
+.waitlist-form.show-optional #portfolioInput {
+  opacity: 1;
+  pointer-events: auto;
+  left: -680px; /* adjust spacing from email field */
+}
+
   
     button {
       padding:18px 40px; font-size:16px; background:#eee; color:#0a0a0a;
