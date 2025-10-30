@@ -157,23 +157,40 @@ input[type="email"]:-webkit-autofill:focus {
   color: #666;
 }
 
-/* === Optional fields initially hidden === */
+/* === Optional fields animation === */
 #occupationInput,
 #portfolioInput {
   opacity: 0;
   pointer-events: none;
   position: absolute;
-  left: -340px; /* start hidden to the left */
-  transition: opacity 3s ease, left 1.2s ease;
+  transition: opacity 3s ease, transform 1.2s ease;
 }
 
-/* === When active, slide in & fade === */
+/* Each field has its own starting offset */
+#occupationInput {
+  transform: translateX(-100px);
+}
+#portfolioInput {
+  transform: translateX(-200px);
+}
+
+/* === When active === */
 .waitlist-form.show-optional #occupationInput,
 .waitlist-form.show-optional #portfolioInput {
   opacity: 1;
   pointer-events: auto;
-  left: -680px; /* adjust spacing from email field */
 }
+
+/* Smooth staggered slide-in */
+.waitlist-form.show-optional #occupationInput {
+  transform: translateX(-350px);
+  transition-delay: 0.2s;
+}
+.waitlist-form.show-optional #portfolioInput {
+  transform: translateX(-700px);
+  transition-delay: 0.5s;
+}
+
 
   
     button {
