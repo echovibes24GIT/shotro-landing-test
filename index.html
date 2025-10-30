@@ -80,13 +80,39 @@
       display:flex; gap:12px; margin-bottom:20px; flex-wrap:wrap; justify-content:center;
     }
 
-    input[type="email"] {
-      padding:18px 28px; font-size:16px; background:rgba(255,255,255,.05);
-      border:1px solid rgba(255,255,255,.1); border-radius:12px; color:#fff;
-      width:320px; transition:all .3s ease; outline:none;
-    }
-    input[type="email"]:focus { background:rgba(255,255,255,.08); border-color:rgba(255,255,255,.3); }
-    input[type="email"]::placeholder { color:#666; }
+    /* === unified input style for all fields === */
+input[type="email"],
+input[type="text"],
+input[type="url"] {
+  padding: 18px 28px;
+  font-size: 16px;
+  background: rgba(255,255,255,.05);
+  border: 1px solid rgba(255,255,255,.1);
+  border-radius: 12px;
+  color: #fff;
+  width: 320px;
+  transition: all .3s ease;
+  outline: none;
+}
+
+input[type="email"]:focus,
+input[type="text"]:focus,
+input[type="url"]:focus {
+  background: rgba(255,255,255,.08);
+  border-color: rgba(255,255,255,.3);
+}
+
+input[type="email"]::placeholder,
+input[type="text"]::placeholder,
+input[type="url"]::placeholder {
+  color: #666;
+}
+
+/* Optional: add subtle spacing for multiple fields */
+.waitlist-form input + input {
+  margin-top: 10px;
+}
+
 
     /* === Autofill styling fix === */
 input[type="email"]:-webkit-autofill {
@@ -174,8 +200,8 @@ input[type="email"]:-webkit-autofill:focus {
               <input type="email" placeholder="Enter your email" required id="emailInput">
 
   <!-- Hidden initially -->
-  <input type="text" placeholder="Occupation (optional)" id="occupationInput" style="display:none;">
-  <input type="url" placeholder="Portfolio / IMDb link (optional)" id="portfolioInput" style="display:none;">
+  <input type="text" placeholder="Occupation (OPTIONAL)" id="occupationInput" style="display:none;">
+  <input type="text" placeholder="Portfolio / IMDb link (OPTIONAL)" id="portfolioInput" style="display:none;">
   
               <button type="submit">Join Waitlist</button>
             </form>
