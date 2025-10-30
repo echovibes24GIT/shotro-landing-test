@@ -157,40 +157,16 @@ input[type="email"]:-webkit-autofill:focus {
   color: #666;
 }
 
-/* === Optional fields animation (cinematic staggered fade) === */
-#occupationInput,
-#portfolioInput {
-  opacity: 0;
-  pointer-events: none;
-  position: absolute;
-  transition: opacity 2.5s ease, transform 1.8s ease;
+/* === Layout baseline === */
+.waitlist-form {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  position: relative;
 }
 
-/* Separate vertical offsets so they stack cleanly */
-#occupationInput {
-  transform: translateX(-80px);
-  top: 0;
-}
-#portfolioInput {
-  transform: translateX(-80px);
-  top: 70px; /* just below occupation field */
-}
-
-/* === When active (slide left + fade) === */
-.waitlist-form.show-optional #occupationInput {
-  opacity: 1;
-  pointer-events: auto;
-  transform: translateX(-380px);
-  transition-delay: 0.3s;  /* starts first */
-}
-.waitlist-form.show-optional #portfolioInput {
-  opacity: 1;
-  pointer-events: auto;
-  transform: translateX(-380px);
-  transition-delay: 1.3s;  /* follows ~1s later */
-}
-
-/* === Unified input styling === */
+/* unified field style */
 .waitlist-form input[type="email"],
 .waitlist-form input[type="text"] {
   padding: 18px 28px;
@@ -210,6 +186,53 @@ input[type="email"]:-webkit-autofill:focus {
 .waitlist-form input::placeholder {
   color: #666;
 }
+
+/* === Optional fields container === */
+.optional-fields {
+  position: absolute;
+  right: 100%;
+  top: 50%;
+  transform: translateY(-50%) translateX(-30px);
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  opacity: 0;
+  filter: blur(8px);
+  pointer-events: none;
+  transition: opacity 3s ease, filter 3s ease, transform 1.2s ease;
+}
+
+/* when active */
+.waitlist-form.show-optional .optional-fields {
+  opacity: 1;
+  filter: blur(0);
+  transform: translateY(-50%) translateX(-10px);
+  pointer-events: auto;
+}
+
+/* staggered child animations */
+.optional-fields input:nth-child(1) {
+  transition-delay: 0.3s;
+}
+.optional-fields input:nth-child(2) {
+  transition-delay: 1.3s;
+}
+
+/* mobile fallback */
+@media (max-width: 768px) {
+  .optional-fields {
+    position: static;
+    opacity: 0;
+    filter: blur(8px);
+    transform: translateY(-10px);
+  }
+  .waitlist-form.show-optional .optional-fields {
+    opacity: 1;
+    filter: blur(0);
+    transform: translateY(0);
+  }
+}
+
 
 
 
@@ -254,13 +277,13 @@ input[type="email"]:-webkit-autofill:focus {
     .blur-1{top:-200px;left:-200px;}
     .blur-2{bottom:-200px;right:-200px;}
 
-    
+    /*
     @media(max-width:768px){
       .container,nav{padding:0 20px;}
       .waitlist-form{flex-direction:column;width:100%;}
       input[type="email"],button{width:100%;}
     }
-
+*/
 
 
 
