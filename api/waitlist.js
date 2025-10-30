@@ -10,13 +10,13 @@ module.exports = async (req, res) => {
 
   try {
     const body = typeof req.body === 'string' ? JSON.parse(req.body) : req.body;
-    const { email, occupation, portfolio } = body || {};
+    const { email, name, occupation, portfolio } = body || {};
 
     if (!email || !email.includes('@')) {
       return res.status(400).json({ message: 'Invalid email' });
     }
 
-    // ✅ Step 1: Check for duplicates first — and stop right here if exists
+    // ✅ Step 1: Check for duplicates first
     const { data: existing, error: checkError } = await supabase
       .from('waitlist')
       .select('email')
@@ -33,13 +33,17 @@ module.exports = async (req, res) => {
       return res.status(200).json({ message: 'exists' });
     }
 
-    // ✅ Step 2: Insert new record (optional fields supported)
+    // ✅ Step 2: Insert new record (with all optional fields)
     const { error: insertError } = await supabase
       .from('waitlist')
-      .insert([{ email, occupation: occupation || null, portfolio: portfolio || null }]);
+      .insert([{ 
+        email, 
+        name: name || null, 
+        occupation: occupation || null, 
+        portfolio: portfolio || null 
+      }]);
 
     if (insertError) {
-      // Handle duplicate (in case of race)
       if (insertError.code === '23505' || /duplicate key/i.test(insertError.message)) {
         console.log('Duplicate signup (race condition):', email);
         return res.status(200).json({ message: 'exists' });
@@ -48,36 +52,35 @@ module.exports = async (req, res) => {
       return res.status(500).json({ message: 'error', detail: insertError.message });
     }
 
-    // ✅ Step 3: Send welcome email only for *new* signups
-    try {
-      // Optional info block
-      const extraInfo = [];
-      if (occupation) extraInfo.push(`<p><strong>Occupation:</strong> ${occupation}</p>`);
-      if (portfolio)
-        extraInfo.push(
-          `<p><strong>Portfolio:</strong> <a href="${portfolio}" target="_blank">${portfolio}</a></p>`
-        );
+    // ✅ Step 3: Build optional info block for email
+    const optionalLines = [];
+    if (name) optionalLines.push(`<p><strong>Name:</strong> ${name}</p>`);
+    if (occupation) optionalLines.push(`<p><strong>Occupation:</strong> ${occupation}</p>`);
+    if (portfolio)
+      optionalLines.push(`<p><strong>Portfolio:</strong> <a href="${portfolio}" target="_blank">${portfolio}</a></p>`);
 
+    // ✅ Step 4: Send welcome email
+    try {
       await resend.emails.send({
         from: 'Shotro Team <team@shotro.ai>',
         to: email,
         subject: 'Welcome to the Shotro Waitlist!',
         html: `
-          <p>Hey there,</p>
+          <p>Hey${name ? ' ' + name.split(' ')[0] : ''},</p>
           <p>You’re officially on the Shotro waitlist.</p>
-          <p>Stay tuned ...</p>
-          ${extraInfo.join('\n')}
+          <p>Stay tuned — cinematic AI is coming soon.</p>
+          ${optionalLines.length ? optionalLines.join('') : ''}
           <p>– The Shotro Team</p>
         `,
       });
 
       console.log('Welcome email sent:', email);
     } catch (mailErr) {
-      // Don’t fail if the email API hiccups
       console.error('Resend mail send error:', mailErr);
     }
 
     return res.status(200).json({ message: 'added' });
+
   } catch (error) {
     console.error('Waitlist handler error:', error);
     return res.status(500).json({ message: 'error', detail: error.message });
