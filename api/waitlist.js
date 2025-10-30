@@ -61,23 +61,26 @@ module.exports = async (req, res) => {
 
     // ✅ Step 4: Send welcome email
     try {
-      await resend.emails.send({
-        from: 'Shotro Team <team@shotro.ai>',
-        to: email,
-        subject: 'Welcome to the Shotro Waitlist!',
-        html: `
-          <p>Hey${name ? ' ' + name.split(' ')[0] : ''},</p>
-          <p>You’re officially on the Shotro waitlist.</p>
-          <p>Stay tuned — cinematic AI is coming soon.</p>
-          ${optionalLines.length ? optionalLines.join('') : ''}
-          <p>– The Shotro Team</p>
-        `,
-      });
+  const firstName = name ? name.split(' ')[0] : 'filmmaker';
 
-      console.log('Welcome email sent:', email);
-    } catch (mailErr) {
-      console.error('Resend mail send error:', mailErr);
-    }
+  await resend.emails.send({
+    from: 'Shotro Team <team@shotro.ai>',
+    to: email,
+    subject: 'Welcome to Shotro 🎬',
+    html: `
+      <p>Hey ${firstName},</p>
+      <p>Thanks for signing up — something exciting is on the way.</p>
+      <p>We’ll keep you in the loop (only essential updates, promise).</p>
+      <br>
+      <p>With love,<br>— The Shotro Team</p>
+      <p style="margin-top:30px;font-size:12px;color:#999;">Shotro.ai</p>
+    `,
+  });
+
+  console.log('Welcome email sent:', email);
+} catch (mailErr) {
+  console.error('Resend mail send error:', mailErr);
+}
 
     return res.status(200).json({ message: 'added' });
 
