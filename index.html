@@ -157,40 +157,40 @@ input[type="email"]:-webkit-autofill:focus {
   color: #666;
 }
 
-/* === Optional fields animation (no overlap) === */
+/* === Optional fields animation (cinematic staggered fade) === */
 #occupationInput,
 #portfolioInput {
   opacity: 0;
   pointer-events: none;
   position: absolute;
-  transition: opacity 3s ease, transform 1.5s ease;
+  transition: opacity 2.5s ease, transform 1.8s ease;
 }
 
-/* individual offsets so they don't stack */
+/* Separate vertical offsets so they stack cleanly */
 #occupationInput {
-  transform: translateX(-100px);
+  transform: translateX(-80px);
   top: 0;
 }
 #portfolioInput {
-  transform: translateX(-100px);
-  top: 65px; /* moves portfolio slightly below occupation */
+  transform: translateX(-80px);
+  top: 70px; /* just below occupation field */
 }
 
-/* === When active (slide left & fade in) === */
+/* === When active (slide left + fade) === */
 .waitlist-form.show-optional #occupationInput {
   opacity: 1;
   pointer-events: auto;
   transform: translateX(-380px);
-  transition-delay: 0.2s;
+  transition-delay: 0.3s;  /* starts first */
 }
 .waitlist-form.show-optional #portfolioInput {
   opacity: 1;
   pointer-events: auto;
   transform: translateX(-380px);
-  transition-delay: 0.5s;
+  transition-delay: 1.3s;  /* follows ~1s later */
 }
 
-/* keep consistent styling with other fields */
+/* === Unified input styling === */
 .waitlist-form input[type="email"],
 .waitlist-form input[type="text"] {
   padding: 18px 28px;
