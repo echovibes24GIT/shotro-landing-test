@@ -172,6 +172,11 @@ input[type="email"]:-webkit-autofill:focus {
 
 <form class="waitlist-form" id="waitlistForm">
               <input type="email" placeholder="Enter your email" required id="emailInput">
+
+  <!-- Hidden initially -->
+  <input type="text" placeholder="Occupation (optional)" id="occupationInput" style="display:none;">
+  <input type="url" placeholder="Portfolio / IMDb link (optional)" id="portfolioInput" style="display:none;">
+  
               <button type="submit">Join Waitlist</button>
             </form>
 
@@ -221,16 +226,33 @@ input[type="email"]:-webkit-autofill:focus {
   </script>
 
 <script>
+  const emailInput = document.getElementById('emailInput');
+  const occupationInput = document.getElementById('occupationInput');
+  const portfolioInput = document.getElementById('portfolioInput');
+  const successMessage = document.getElementById('successMessage');
+
+  // 👇 Show extra fields smoothly when email is focused
+  emailInput.addEventListener('focus', () => {
+    occupationInput.style.display = 'block';
+    portfolioInput.style.display = 'block';
+    occupationInput.style.opacity = portfolioInput.style.opacity = '0';
+    setTimeout(() => {
+      occupationInput.style.transition = portfolioInput.style.transition = 'opacity 0.4s ease';
+      occupationInput.style.opacity = portfolioInput.style.opacity = '1';
+    }, 50);
+  });
+
   document.getElementById('waitlistForm').addEventListener('submit', async (e) => {
     e.preventDefault();
-    const emailInput = document.getElementById('emailInput');
-    const successMessage = document.getElementById('successMessage');
+
     const email = emailInput.value.trim();
+    const occupation = occupationInput.value.trim();
+    const portfolio = portfolioInput.value.trim();
 
     const response = await fetch('/api/waitlist', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ email })
+      body: JSON.stringify({ email, occupation, portfolio })
     });
 
     const data = await response.json();
@@ -244,11 +266,12 @@ input[type="email"]:-webkit-autofill:focus {
     }
 
     successMessage.classList.add('show');
-    emailInput.value = '';
+    emailInput.value = occupationInput.value = portfolioInput.value = '';
 
     setTimeout(() => successMessage.classList.remove('show'), 3000);
   });
 </script>
+
 
 
   
