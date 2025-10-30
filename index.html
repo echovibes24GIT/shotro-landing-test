@@ -208,53 +208,69 @@
   </footer>
 
   <script>
-    // reveal optional fields on focus
-    const form = document.getElementById('waitlistForm');
-    const emailInput = document.getElementById('emailInput');
-    emailInput.addEventListener('focus', () => form.classList.add('show-optional'));
+  // === Handle optional reveal ===
+  const form = document.getElementById('waitlistForm');
+  const emailInput = document.getElementById('emailInput');
+  const occupationInput = document.getElementById('occupationInput');
+  const portfolioInput = document.getElementById('portfolioInput');
+  const successMessage = document.getElementById('successMessage');
 
-    // animated text
-    const phrases = ['For filmmakers.','For agencies.','For studios.','Take control back.'];
-    let currentPhrase = 0;
-    const animatedText = document.getElementById('animatedText');
+  // reveal optional fields when focusing email
+  emailInput.addEventListener('focus', () => form.classList.add('show-optional'));
 
-    function cycleText() {
-      animatedText.style.animation = 'none';
-      setTimeout(() => {
-        animatedText.textContent = phrases[currentPhrase];
-        animatedText.style.animation = 'fadeInOut 4s ease-in-out';
-        currentPhrase = (currentPhrase + 1) % phrases.length;
-      }, 50);
-    }
-    cycleText();
-    setInterval(cycleText, 4000);
+  // === Animated tagline ===
+  const phrases = ['For filmmakers.', 'For agencies.', 'For studios.', 'Take control back.'];
+  let currentPhrase = 0;
+  const animatedText = document.getElementById('animatedText');
 
-    // waitlist submit
-    const occupationInput = document.getElementById('occupationInput');
-    const portfolioInput = document.getElementById('portfolioInput');
-    const successMessage = document.getElementById('successMessage');
+  function cycleText() {
+    animatedText.style.animation = 'none';
+    setTimeout(() => {
+      animatedText.textContent = phrases[currentPhrase];
+      animatedText.style.animation = 'fadeInOut 4s ease-in-out';
+      currentPhrase = (currentPhrase + 1) % phrases.length;
+    }, 50);
+  }
+  cycleText();
+  setInterval(cycleText, 4000);
 
-    form.addEventListener('submit', async (e) => {
-      e.preventDefault();
-      const email = emailInput.value.trim();
-      const occupation = occupationInput.value.trim();
-      const portfolio = portfolioInput.value.trim();
+  // === Waitlist submission ===
+  form.addEventListener('submit', async (e) => {
+    e.preventDefault();
 
-      const response = await fetch('/api/waitlist', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email, occupation, portfolio })
-      });
+    const email = emailInput.value.trim();
+    const occupation = occupationInput.value.trim();
+    const portfolio = portfolioInput.value.trim();
 
-      const data = await response.json();
-      if (data.message === 'exists') successMessage.textContent = 'You’re already on the list!';
-      else if (data.message === 'added') successMessage.textContent = '✓ Welcome aboard!';
-      else successMessage.textContent = 'Something went wrong. Try again.';
-
-      successMessage.classList.add('show');
-      emailInput.value = occupationInput.value = portfolioInput.value = '';
-      setTimeout(() => successMessage.classList.remove('show'), 3000);
+    const response = await fetch('/api/waitlist', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ email, occupation, portfolio })
     });
-  </script>
+
+    const data = await response.json();
+
+    // success message
+    if (data.message === 'exists') {
+      successMessage.textContent = 'You’re already on the list!';
+    } else if (data.message === 'added') {
+      successMessage.textContent = '✓ Welcome aboard!';
+    } else {
+      successMessage.textContent = 'Something went wrong. Try again.';
+    }
+
+    successMessage.classList.add('show');
+
+    // clear fields + reset state
+    emailInput.value = '';
+    occupationInput.value = '';
+    portfolioInput.value = '';
+    form.classList.remove('show-optional');
+
+    // hide success message after delay
+    setTimeout(() => successMessage.classList.remove('show'), 3000);
+  });
+</script>
+
 </body>
 </html>
