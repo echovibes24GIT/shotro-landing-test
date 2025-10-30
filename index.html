@@ -317,11 +317,15 @@ input[type="email"]:-webkit-autofill:focus {
               <input type="email" placeholder="Enter your email" required id="emailInput">
 
   <!-- Hidden initially -->
-  <input type="text" placeholder="Occupation (OPTIONAL)" id="occupationInput" style="display:none;">
-  <input type="text" placeholder="Portfolio / IMDb link (OPTIONAL)" id="portfolioInput" style="display:none;">
-  
-              <button type="submit">Join Waitlist</button>
-            </form>
+  <form class="waitlist-form" id="waitlistForm">
+  <div class="optional-fields">
+    <input type="text" placeholder="Occupation (optional)" id="occupationInput">
+    <input type="text" placeholder="Portfolio / IMDb link (optional)" id="portfolioInput">
+  </div>
+  <input type="email" placeholder="Enter your email" required id="emailInput">
+  <button type="submit">Join Waitlist</button>
+</form>
+
 
 <!--
 <form class="waitlist-form" id="waitlistForm">
