@@ -96,8 +96,9 @@
       pointer-events: auto;
     }
 
-    .optional-fields input:nth-child(1) { transition-delay: .3s; }
-    .optional-fields input:nth-child(2) { transition-delay: 1.3s; }
+    .optional-fields input:nth-child(1) { transition-delay: 0.3s; }
+.optional-fields input:nth-child(2) { transition-delay: 1.0s; }
+.optional-fields input:nth-child(3) { transition-delay: 1.7s; }
 
     input[type="email"],
     input[type="text"] {
@@ -184,14 +185,16 @@
           <p class="tagline">AI film production, reimagined</p>
 
           <div class="cta-section">
+           
             <form class="waitlist-form" id="waitlistForm">
-              <div class="optional-fields">
-                <input type="text" placeholder="Occupation (optional)" id="occupationInput">
-                <input type="text" placeholder="Portfolio / IMDb link (optional)" id="portfolioInput">
-              </div>
-              <input type="email" placeholder="Enter your email" required id="emailInput">
-              <button type="submit">Join Waitlist</button>
-            </form>
+  <div class="optional-fields">
+    <input type="text" placeholder="Name (optional)" id="nameInput">
+    <input type="text" placeholder="Occupation (optional)" id="occupationInput">
+    <input type="text" placeholder="Portfolio / IMDb link (optional)" id="portfolioInput">
+  </div>
+  <input type="email" placeholder="Enter your email" required id="emailInput">
+  <button type="submit">Join Waitlist</button>
+</form>
 
             <p class="animated-text" id="animatedText">For filmmakers.</p>
             <p class="success-message" id="successMessage">✓ You're on the list!</p>
@@ -208,14 +211,15 @@
   </footer>
 
   <script>
-  // === Handle optional reveal ===
+  // === Reveal optional fields ===
   const form = document.getElementById('waitlistForm');
   const emailInput = document.getElementById('emailInput');
+  const nameInput = document.getElementById('nameInput');
   const occupationInput = document.getElementById('occupationInput');
   const portfolioInput = document.getElementById('portfolioInput');
   const successMessage = document.getElementById('successMessage');
 
-  // reveal optional fields when focusing email
+  // Reveal optional fields when focusing email
   emailInput.addEventListener('focus', () => form.classList.add('show-optional'));
 
   // === Animated tagline ===
@@ -239,18 +243,19 @@
     e.preventDefault();
 
     const email = emailInput.value.trim();
+    const name = nameInput.value.trim();
     const occupation = occupationInput.value.trim();
     const portfolio = portfolioInput.value.trim();
 
     const response = await fetch('/api/waitlist', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ email, occupation, portfolio })
+      body: JSON.stringify({ email, name, occupation, portfolio })
     });
 
     const data = await response.json();
 
-    // success message
+    // show success message
     if (data.message === 'exists') {
       successMessage.textContent = 'You’re already on the list!';
     } else if (data.message === 'added') {
@@ -261,13 +266,13 @@
 
     successMessage.classList.add('show');
 
-    // clear fields + reset state
+    // reset & hide optional fields
     emailInput.value = '';
+    nameInput.value = '';
     occupationInput.value = '';
     portfolioInput.value = '';
     form.classList.remove('show-optional');
 
-    // hide success message after delay
     setTimeout(() => successMessage.classList.remove('show'), 3000);
   });
 </script>
