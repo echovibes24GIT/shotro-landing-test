@@ -19,12 +19,10 @@
     }
 
     .grain {
-      position:fixed; top:0; left:0; width:100%; height:100%;
+      position:fixed; inset:0;
       pointer-events:none; opacity:.03; z-index:1000;
       background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 400 400' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
     }
-
-    .container { max-width:1400px; margin:0 auto; padding:0 40px; }
 
     header {
       padding:30px 0; position:fixed; width:100%; top:0; z-index:100;
@@ -39,7 +37,6 @@
 
     .logo-group { display:flex; align-items:center; gap:10px; }
     .logo-img { height:25px; width:auto; opacity:.9; }
-
     .logo {
       font-size:24px; font-weight:600; letter-spacing:-.5px;
       background:linear-gradient(135deg,#fff 0%,#a0a0a0 100%);
@@ -47,24 +44,79 @@
     }
 
     .hero {
-      min-height:100vh; display:flex; align-items:center; justify-content:center;
+      min-height:100vh; display:flex; flex-direction:column;
+      align-items:center; justify-content:center;
       position:relative; padding-top:100px; text-align:center;
     }
 
-    .gradient-blur {
-      position:absolute; width:600px; height:600px;
-      background:radial-gradient(circle,rgba(100,100,100,.15) 0%,transparent 70%);
-      filter:blur(80px); pointer-events:none;
+    /* === WAITLIST FORM === */
+    .waitlist-form {
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      gap:12px;
+      position:relative;
+      margin-bottom:40px;
     }
-    .blur-1{top:-200px;left:-200px;}
-    .blur-2{bottom:-200px;right:-200px;}
 
-    /* Animated line */
+    .optional-fields {
+      position:absolute;
+      right:100%;
+      top:50%;
+      transform:translateY(-50%) translateX(-30px);
+      display:flex;
+      flex-direction:column;
+      gap:10px;
+      opacity:0;
+      filter:blur(8px);
+      pointer-events:none;
+      transition:opacity 3s ease, filter 3s ease, transform 1.2s ease;
+    }
+
+    .waitlist-form.show-optional .optional-fields {
+      opacity:1;
+      filter:blur(0);
+      transform:translateY(-50%) translateX(-10px);
+      pointer-events:auto;
+    }
+
+    /* Staggered fade delays */
+    .optional-fields input:nth-child(1) { transition-delay:.3s; }
+    .optional-fields input:nth-child(2) { transition-delay:1.3s; }
+
+    input[type="email"],
+    input[type="text"] {
+      padding:18px 28px;
+      font-size:16px;
+      background:rgba(255,255,255,.05);
+      border:1px solid rgba(255,255,255,.1);
+      border-radius:12px;
+      color:#fff;
+      width:320px;
+      transition:all .3s ease;
+      outline:none;
+    }
+    input:focus {
+      background:rgba(255,255,255,.08);
+      border-color:rgba(255,255,255,.3);
+    }
+    input::placeholder { color:#666; }
+
+    button {
+      padding:18px 40px; font-size:16px;
+      background:#eee; color:#0a0a0a;
+      border:none; border-radius:12px; cursor:pointer;
+      font-weight:600; transition:all .3s ease;
+    }
+    button:hover { transform:translateY(-2px); box-shadow:0 10px 40px rgba(255,255,255,.2); }
+
+    /* === Animated line === */
     .animated-text {
-      position:relative; z-index:1;
       font-size:clamp(18px,3.2vw,32px);
-      color:#bfbfbf; letter-spacing:-.01em;
-      opacity:0; animation:fadeInOut 4s ease-in-out;
+      color:#bfbfbf;
+      letter-spacing:-.01em;
+      opacity:0;
+      animation:fadeInOut 4s ease-in-out;
     }
     @keyframes fadeInOut {
       0%{opacity:0} 20%{opacity:1} 80%{opacity:1} 100%{opacity:0}
@@ -75,8 +127,27 @@
       border-top:1px solid rgba(255,255,255,.05); color:#666;
     }
 
+    /* === Responsive === */
     @media(max-width:768px){
-      .container,nav{padding:0 20px;}
+      .waitlist-form {
+        flex-direction:column;
+        gap:12px;
+      }
+      .optional-fields {
+        position:static;
+        opacity:0;
+        filter:blur(8px);
+        transform:translateY(-10px);
+      }
+      .waitlist-form.show-optional .optional-fields {
+        opacity:1;
+        filter:blur(0);
+        transform:translateY(0);
+      }
+      .optional-fields input:nth-child(1),
+      .optional-fields input:nth-child(2) {
+        transition-delay:0s;
+      }
     }
   </style>
 </head>
@@ -94,21 +165,34 @@
 
   <main>
     <section class="hero">
-      <div class="gradient-blur blur-1"></div>
- 
+      <form class="waitlist-form" id="waitlistForm">
+        <div class="optional-fields">
+          <input type="text" placeholder="Occupation (optional)" id="occupationInput">
+          <input type="text" placeholder="Portfolio / IMDb link (optional)" id="portfolioInput">
+        </div>
+        <input type="email" placeholder="Enter your email" required id="emailInput">
+        <button type="submit">Join Waitlist</button>
+      </form>
 
-      <!-- Animated line -->
       <p id="animatedText" class="animated-text">For filmmakers.</p>
     </section>
   </main>
 
   <footer>
     <div class="container">
-      <p>&copy; 2025 Shotro.ai | All rights reserved</p>
+      <p>&copy; 2025 Shotro.ai | All rights reserved.</p>
     </div>
   </footer>
 
   <script>
+    // Cinematic reveal
+    const form = document.getElementById('waitlistForm');
+    const emailInput = document.getElementById('emailInput');
+    emailInput.addEventListener('focus', () => {
+      form.classList.add('show-optional');
+    });
+
+    // Animated tagline
     const phrases = [
       'For filmmakers.',
       'For agencies.',
@@ -131,9 +215,8 @@
   </script>
 
   <script>
-  window.va = window.va || function () { (window.vaq = window.vaq || []).push(arguments); };
-</script>
-<script defer src="/_vercel/insights/script.js"></script>
-  
+    window.va = window.va || function () { (window.vaq = window.vaq || []).push(arguments); };
+  </script>
+  <script defer src="/_vercel/insights/script.js"></script>
 </body>
 </html>
