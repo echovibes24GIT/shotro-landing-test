@@ -162,7 +162,31 @@
         transform: translateY(0);
       }
     }
+
+/* === Footer Layout === */
+.footer-layout {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.go-to-app {
+  font-size: 14px;
+  color: #aaa;
+  text-decoration: none;
+  transition: color 0.3s ease, transform 0.3s ease;
+}
+
+.go-to-app:hover {
+  color: #fff;
+  transform: translateX(3px);
+}
+
+    
   </style>
+  
 </head>
 
 <body>
@@ -205,10 +229,14 @@
   </main>
 
   <footer>
-    <div class="container">
-      <p>&copy; 2025 Shotro.ai | All rights reserved.</p>
-    </div>
-  </footer>
+  <div class="container footer-layout">
+    <p>&copy; 2025 Shotro.ai | All rights reserved.</p>
+    <a href="https://shotro.ai" class="go-to-app" target="_blank" rel="noopener noreferrer">
+      Go to App →
+    </a>
+  </div>
+</footer>
+
 
   <script>
   // === Reveal optional fields ===
