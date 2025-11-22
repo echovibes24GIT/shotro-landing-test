@@ -69,7 +69,7 @@ module.exports = async (req, res) => {
     subject: 'Welcome to Shotro 🎬',
     html: `
       <p>Hey ${firstName},</p>
-      <p>Thanks for signing up — something exciting is on the way.</p>
+      <p>Thanks for signing up - something exciting is on the way.</p>
       <p>We’ll keep you in the loop (only essential updates, promise).</p>
       <br>
       <p>With love,<br>— The Shotro Team</p>
